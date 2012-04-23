@@ -97,6 +97,7 @@ function add_zone($db_type, $db_link, $domain_id) {
 }
 
 function get_current_date() {
+	date_default_timezone_set('UTC');	
 	return time();
 }
 
