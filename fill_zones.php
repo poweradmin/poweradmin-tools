@@ -3,7 +3,7 @@
 include 'functions.php';
 include 'config.php';
 
-$max_domains = 1;	// define how many domain you want to generate
+$max_domains = 10;	// define how many domain you want to generate
 
 if ($dsn['host'] == '' || $dsn['name'] == '' || $dsn['user'] == '' || $dsn['pass'] == '') {
 	echo 'Please define settings for database connection'.PHP_EOL;
@@ -42,5 +42,3 @@ for ($index = 1; $index <= $max_domains; $index++) {
 }
 
 db_close($db_type, $link);
-
-?>

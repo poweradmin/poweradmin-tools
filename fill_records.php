@@ -4,8 +4,8 @@ include 'functions.php';
 
 include 'config.php';
 
-$max_domains = 5;	// define how many domain you want to generate
-$max_records = 20;	// define how many records you want in each zone
+$max_domains = 1;	// define how many domain you want to generate
+$max_records = 7000;	// define how many records you want in each zone
 
 if ($dsn['host'] == '' || $dsn['name'] == '' || $dsn['user'] == '' || $dsn['pass'] == '') {
 	echo 'Please define settings for database connection'.PHP_EOL;
@@ -43,11 +43,12 @@ for ($index = 1; $index <= $max_domains; $index++) {
 	for ($rindex = 1; $rindex < $max_records; $rindex++) {
 		$subdomain = get_random_name();
 
+        $type = get_random_type();
 		$record_array = array(
 			'id' => $domain_id,
 			'name' => $subdomain,
-			'type' => 'IN',
-			'content' => get_random_ip(),
+			'type' => $type,
+			'content' => get_random_content_by_type($type),
 			'ttl' => $soa['ttl'],
 			'prio' => $soa['prio'], 
 			'date' => $date,
@@ -59,5 +60,3 @@ for ($index = 1; $index <= $max_domains; $index++) {
 }
 
 db_close($db_type, $link);
-
-?>
