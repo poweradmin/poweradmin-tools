@@ -4,8 +4,8 @@ include 'functions.php';
 
 include 'config.php';
 
-$max_domains = 1;	// define how many domain you want to generate
-$max_records = 7000;	// define how many records you want in each zone
+$max_domains = 1000;	// define how many domain you want to generate
+$max_records = 1000;	// define how many records you want in each zone
 
 if ($dsn['host'] == '' || $dsn['name'] == '' || $dsn['user'] == '' || $dsn['pass'] == '') {
 	echo 'Please define settings for database connection'.PHP_EOL;
@@ -17,14 +17,17 @@ if ($soa['ns1'] == '' || $soa['hostmaster'] == '') {
 	exit;
 }
 
+echo 'Connecting to the database...' . PHP_EOL;
 $link = db_connect($db_type, $dsn);
+echo 'Connected to the database.' . PHP_EOL;
 
 $date = get_current_date();
 $serial = get_serial();
 
 for ($index = 1; $index <= $max_domains; $index++) {
 	$domain = get_random_domain();
-	$domain_id = add_domain($db_type, $link, $domain);
+    echo "Adding domain: $domain" . PHP_EOL;
+    $domain_id = add_domain($db_type, $link, $domain);
 
 	$record_array = array(
 		'id' => $domain_id,
@@ -38,10 +41,11 @@ for ($index = 1; $index <= $max_domains; $index++) {
 		'date' => $date,
 	);
 
-	add_record($db_type, $link, $record_array);
+    echo "S";
+    add_record($db_type, $link, $record_array);
 
 	for ($rindex = 1; $rindex < $max_records; $rindex++) {
-		$subdomain = get_random_name();
+		$subdomain = get_pronounceable_random_name();
 
         $type = get_random_type();
 		$record_array = array(
@@ -53,10 +57,17 @@ for ($index = 1; $index <= $max_domains; $index++) {
 			'prio' => $soa['prio'], 
 			'date' => $date,
 		);
-		add_record($db_type, $link, $record_array);
+        echo substr($type, 0, 1);
+        add_record($db_type, $link, $record_array);
 	}
+    echo PHP_EOL; // Move to the next line after all records for a domain are added
 
-	add_zone($db_type, $link, $domain_id);
+    echo "Adding zone for domain: $domain" . PHP_EOL;
+    add_zone($db_type, $link, $domain_id);
+
+    echo PHP_EOL;
 }
 
+echo 'Closing the database connection...' . PHP_EOL;
 db_close($db_type, $link);
+echo 'Database connection closed.' . PHP_EOL;
