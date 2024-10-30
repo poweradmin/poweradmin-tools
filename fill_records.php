@@ -4,8 +4,7 @@ include 'functions.php';
 
 include 'config.php';
 
-$max_domains = 1000;	// define how many domain you want to generate
-$max_records = 1000;	// define how many records you want in each zone
+$max_domains = 1000; // define how many domains you want to add
 
 if ($dsn['host'] == '' || $dsn['name'] == '' || $dsn['user'] == '' || $dsn['pass'] == '') {
 	echo 'Please define settings for database connection'.PHP_EOL;
@@ -25,8 +24,8 @@ $date = get_current_date();
 $serial = get_serial();
 
 for ($index = 1; $index <= $max_domains; $index++) {
+	echo 'Adding domain ' . $index . ' of ' . $max_domains . PHP_EOL;
 	$domain = get_random_domain();
-    echo "Adding domain: $domain" . PHP_EOL;
     $domain_id = add_domain($db_type, $link, $domain);
 
 	$record_array = array(
@@ -44,6 +43,7 @@ for ($index = 1; $index <= $max_domains; $index++) {
     echo "S";
     add_record($db_type, $link, $record_array);
 
+	$max_records = rand(1, 100); // define how many records you want to add for each domain
 	for ($rindex = 1; $rindex < $max_records; $rindex++) {
 		$subdomain = get_pronounceable_random_name();
 
